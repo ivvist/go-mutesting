@@ -14,20 +14,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMainSimple(t *testing.T) {
-	testMain(
-		t,
-		"../../example",
-		[]string{"--debug", "--exec-timeout", "1"},
-		returnOk,
-		"The mutation score is 0.564516 (35 passed, 27 failed, 8 duplicated, 0 skipped, total is 62)",
-	)
-}
-
 func TestMainSimple2(t *testing.T) {
 	testMain(
 		t,
 		"../../example2",
+		[]string{"--exec-timeout", "1"},
+		returnOk,
+		"The mutation score is 0.000000 (0 passed, 6 failed, 0 duplicated, 0 skipped, total is 6)",
+	)
+}
+
+func TestMainSimple(t *testing.T) {
+	testMain(
+		t,
+		"../../example",
 		[]string{"--debug", "--exec-timeout", "1"},
 		returnOk,
 		"The mutation score is 0.564516 (35 passed, 27 failed, 8 duplicated, 0 skipped, total is 62)",
