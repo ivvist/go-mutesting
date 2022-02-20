@@ -14,6 +14,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestMainSimpleBuggyFunc(t *testing.T) {
+	mainCmd([]string{"github.com/ivvist/BuggyFunc/..."})
+}
+
 func TestMainSimple2(t *testing.T) {
 	testMain(
 		t,

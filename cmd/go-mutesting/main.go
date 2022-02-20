@@ -10,7 +10,6 @@ import (
 	"go/printer"
 	"go/token"
 	"go/types"
-	"gopkg.in/yaml.v3"
 	"io"
 	"io/ioutil"
 	"log"
@@ -20,6 +19,8 @@ import (
 	"regexp"
 	"strings"
 	"syscall"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/ivvist/go-mutesting/internal/importing"
 	"github.com/ivvist/go-mutesting/internal/models"
@@ -125,6 +126,34 @@ func mainCmd(args []string) int {
 	}
 
 	files := importing.FilesOfArgs(opts.Remaining.Targets, opts)
+
+	var entry string
+	if len(files) == 0 {
+		var arg string
+		for _, ar := range args {
+			if strings.HasSuffix(ar, "/...") {
+				arg = ar
+				break
+			}
+		}
+		if len(arg) > 0 {
+			arg = "https://" + strings.TrimSuffix(arg, "/...")
+			str := strings.Split(arg, "/")
+			if len(str) > 0 {
+				entry = str[len(str)-1] + "_mut"
+			}
+			os.Remove(entry)
+			goTestCmd := exec.Command("git", "clone", arg, entry)
+			goTestCmd.Env = os.Environ()
+
+			_, err := goTestCmd.CombinedOutput()
+			if err == nil {
+				os.Chdir(entry)
+				files = importing.FilesOfArgs([]string{}, opts)
+			}
+		}
+	}
+
 	if len(files) == 0 {
 		return exitError("Could not find any suitable Go source files")
 	}
@@ -463,6 +492,7 @@ func mutateExec(
 			pkgName += "/..."
 		}
 
+		debug(opts, "Copied to test: "+mutationFile+","+file)
 		goTestCmd := exec.Command("go", "test", "-timeout", fmt.Sprintf("%ds", opts.Exec.Timeout), pkgName)
 		goTestCmd.Env = os.Environ()
 
