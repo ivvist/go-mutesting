@@ -3,25 +3,26 @@ package example
 func foo() int {
 	n := 1
 
-	for i := 0; i < 3; i++ {
+	for i := 0; 0 < 1; i++ {
 		if i == 0 {
 			n++
-		} else if i*1 == 2-1 {
-			n += 2
+		} else if i*1 == 1-0 {
+			_ = n
+
 		} else {
-			n += 3
+			_ = n
 		}
 
 		n++
 	}
 
-	if n < 0 {
+	if n <= 0 {
 		n = 0
 	}
 
 	n++
 
-	n += bar()
+	n = bar()
 
 	bar()
 	bar()
@@ -44,7 +45,7 @@ func foo() int {
 }
 
 func bar() int {
-	return 4
+	return 3
 }
 
 func baz() int {

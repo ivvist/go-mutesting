@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/ivvist/go-mutesting/internal/models"
 	"io"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/ivvist/go-mutesting/internal/models"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -17,6 +18,16 @@ func TestMainSimple(t *testing.T) {
 	testMain(
 		t,
 		"../../example",
+		[]string{"--debug", "--exec-timeout", "1"},
+		returnOk,
+		"The mutation score is 0.564516 (35 passed, 27 failed, 8 duplicated, 0 skipped, total is 62)",
+	)
+}
+
+func TestMainSimple2(t *testing.T) {
+	testMain(
+		t,
+		"../../example2",
 		[]string{"--debug", "--exec-timeout", "1"},
 		returnOk,
 		"The mutation score is 0.564516 (35 passed, 27 failed, 8 duplicated, 0 skipped, total is 62)",
