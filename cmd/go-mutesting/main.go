@@ -10,6 +10,7 @@ import (
 	"go/printer"
 	"go/token"
 	"go/types"
+	"gopkg.in/yaml.v3"
 	"io"
 	"io/ioutil"
 	"log"
@@ -20,10 +21,8 @@ import (
 	"strings"
 	"syscall"
 
-	"gopkg.in/yaml.v3"
-
-	"github.com/avito-tech/go-mutesting/internal/importing"
-	"github.com/avito-tech/go-mutesting/internal/models"
+	"github.com/ivvist/go-mutesting/internal/importing"
+	"github.com/ivvist/go-mutesting/internal/models"
 	"github.com/jessevdk/go-flags"
 
 	"github.com/avito-tech/go-mutesting"
