@@ -10,7 +10,6 @@ import (
 	"go/printer"
 	"go/token"
 	"go/types"
-	"gopkg.in/yaml.v3"
 	"io"
 	"io/ioutil"
 	"log"
@@ -21,10 +20,11 @@ import (
 	"strings"
 	"syscall"
 
+	"gopkg.in/yaml.v3"
+
 	"github.com/avito-tech/go-mutesting/internal/importing"
 	"github.com/avito-tech/go-mutesting/internal/models"
 	"github.com/jessevdk/go-flags"
-	"github.com/zimmski/osutil"
 
 	"github.com/avito-tech/go-mutesting"
 	"github.com/avito-tech/go-mutesting/astutil"
@@ -226,7 +226,7 @@ MUTATOR:
 		tmpFile := tmpDir + "/" + file
 
 		originalFile := fmt.Sprintf("%s.original", tmpFile)
-		err = osutil.CopyFile(file, originalFile)
+		err = copyFile(file, originalFile)
 		if err != nil {
 			panic(err)
 		}
@@ -454,7 +454,7 @@ func mutateExec(
 		if err != nil {
 			panic(err)
 		}
-		err = osutil.CopyFile(mutationFile, file)
+		err = copyFile(mutationFile, file)
 		if err != nil {
 			panic(err)
 		}
@@ -585,4 +585,40 @@ func saveAST(mutationBlackList map[string]struct{}, file string, fset *token.Fil
 	}
 
 	return checksum, false, nil
+}
+
+func copyFile(src string, dst string) (err error) {
+	s, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		e := s.Close()
+		if err == nil {
+			err = e
+		}
+	}()
+
+	d, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		e := d.Close()
+		if err == nil {
+			err = e
+		}
+	}()
+
+	_, err = io.Copy(d, s)
+	if err != nil {
+		return err
+	}
+
+	i, err := os.Stat(src)
+	if err != nil {
+		return err
+	}
+
+	return os.Chmod(dst, i.Mode())
 }
